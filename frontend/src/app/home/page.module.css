@@ -1,0 +1,85 @@
+.container {
+  width: 30%;
+  max-width: 350px;
+  min-width: 300px;
+  height: 95vh;
+  margin: 0.8em;
+
+  background-color: var(--background);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(70, 69, 69, 0.75);
+}
+
+.center {
+  padding: 20px 10px;
+  background-color: #96e2f5;
+  border-radius: 0px 0px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.niet_hackathon {
+  background-color: #3182ce;
+  color: white;
+  width: max-content;
+  padding: 1px 5px;
+  position: relative;
+  top: -10px;
+  margin: 0 auto;
+  border-radius: 5px;
+}
+
+.spacing {
+  margin-top: 0.8em;
+}
+
+.main_content {
+  padding: 20px;
+  padding-top: 0;
+}
+.input_bg {
+  background-color: white;
+}
+
+.map {
+  z-index: -1;
+  position: absolute;
+  top: 0;
+}
+
+.minimise_btn {
+  position: relative;
+  border-radius: 50%;
+  max-width: max-content;
+  padding: 5px;
+  top: 25px;
+  left: calc(100% - 180px);
+  margin: 0 auto;
+  background-color: #3182ce;
+  color: white;
+}
+
+.minimise_btn:hover {
+  cursor: pointer;
+}
+
+.minimise_btn:active {
+  transform: scale(0.9);
+}
+
+@keyframes minimise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+/* Minimised Styling */
+
+.minimised {
+  display: none;
+}
