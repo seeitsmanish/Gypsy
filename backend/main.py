@@ -19,3 +19,27 @@ async def search(text: str, maxResults: int = 5):
 
     return response
 
+
+@app.get("/api/getRoute/")
+async def search(
+    srcLat: float,
+    srcLong: float,
+    destLat: float,
+    destLong: float
+):
+    """
+    Get the Route Info Based on src and dest (in Lat & Long)
+    """
+    response = client.calculate_route(
+        CalculatorName='GypsyRouteCalculator',
+        DeparturePosition=[
+            srcLong,
+            srcLat
+        ],
+        DestinationPosition=[
+            destLong,
+            destLat
+        ]
+    )
+
+    return response
