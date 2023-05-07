@@ -18,3 +18,4 @@ async def search(text: str, maxResults: int = 5):
     )
 
     return response
+
