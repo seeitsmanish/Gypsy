@@ -25,7 +25,9 @@ import {
   AccordionPanel,
   AccordionIcon,
 } from "@chakra-ui/react";
+
 import FeatherIcon from "feather-icons-react";
+import Maps from "../../../components/Maps";
 
 import Image from "next/image";
 import logo from "./Logo.png";
@@ -41,15 +43,14 @@ export default function Home() {
 
   return (
     <div>
-      <div className={minimised ? styles.minimised : styles.container}>
+      <div className={minimised ? styles.minimised : styles.sidebar}>
         <div className={styles.center}>
           <Image src={logo} alt="Logo" height={200} width={200} />
         </div>
 
-        <div className={styles.niet_hackathon}>
+        <div className={minimised ? styles.minimised : styles.niet_hackathon}>
           <Text fontSize="xs">NIET HACKATHON PREWIEW</Text>
         </div>
-
         <div className={styles.main_content}>
           <Stack spacing={2}>
             <Tabs
@@ -173,20 +174,27 @@ export default function Home() {
               </Accordion>
             </CardBody>
           </Card>
-
-          <button className={styles.minimise_btn} onClick={handleMinimise}>
-            <FeatherIcon icon="chevrons-up" />
-          </button>
         </div>
       </div>
+      {minimised ? (
+        <button className={styles.minimise_btn} onClick={handleMinimise}>
+          <FeatherIcon icon="chevrons-down" />
+        </button>
+      ) : (
+        <button className={styles.minimise_btn} onClick={handleMinimise}>
+          <FeatherIcon icon="chevrons-up" />
+        </button>
+      )}
 
-      <Image
+      {/* <Image
         className={styles.map}
         src={map}
         width={"100vw"}
         height={"100vh"}
         alt="Map"
-      />
+      /> */}
+
+      <Maps className={styles.map} />
     </div>
   );
 }
