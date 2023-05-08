@@ -2,8 +2,9 @@ from fastapi import FastAPI
 from datetime import datetime, time, timedelta
 from pydantic import BaseModel
 from typing import List
-import boto3
 from fastapi.middleware.cors import CORSMiddleware
+import boto3
+import random
 
 
 
@@ -47,6 +48,11 @@ async def getRoute(route: RouteRequest):
     """
     Get the Route Info Based on src and dest (in Lat & Long)
     """
+    def random_bit(p):
+        if random.random() < p:
+            return 1
+        else:
+            return 0
 
     response = client.calculate_route(
         CalculatorName='GypsyRouteCalculator',
@@ -54,6 +60,10 @@ async def getRoute(route: RouteRequest):
         DeparturePosition=route.DeparturePosition,
         DestinationPosition=route.DestinationPosition
     )
+
+    steps = response["Legs"][0]["Steps"]
+    for step in steps:
+        step["accidentProne"] = random_bit(0.1)
 
     return response
 
