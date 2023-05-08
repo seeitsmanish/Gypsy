@@ -3,8 +3,10 @@ from datetime import datetime, time, timedelta
 from pydantic import BaseModel
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
+import json
 import boto3
 import random
+import requests
 
 
 
@@ -54,18 +56,14 @@ async def getRoute(route: RouteRequest):
         else:
             return 0
 
-    response = client.calculate_route(
-        CalculatorName='GypsyRouteCalculator',
-        DepartureTime=route.DepartureTime,
-        DeparturePosition=route.DeparturePosition,
-        DestinationPosition=route.DestinationPosition
+    response = requests.get(
+        f"http://router.project-osrm.org/route/v1/driving/"
+        f"{route.DestinationPosition[0]},{route.DeparturePosition[1]};"
+        f"{route.DestinationPosition[0]},{route.DestinationPosition[1]}"
+        f"?geometries=geojson&alternatives=true"
     )
 
-    steps = response["Legs"][0]["Steps"]
-    for step in steps:
-        step["accidentProne"] = random_bit(0.1)
-
-    return response
+    return json.loads(response.content)
 
 
 @app.post("/api/getRoutes")
