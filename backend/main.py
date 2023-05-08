@@ -1,8 +1,21 @@
 from fastapi import FastAPI
 import boto3
+from fastapi.middleware.cors import CORSMiddleware
+
 
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 client = boto3.client('location', region_name='ap-south-1')
 
 
