@@ -36,13 +36,8 @@ async def search(text: str, maxResults: int = 5):
     """
     Autocompletion Support
     """
-    response = client.search_place_index_for_text(
-        IndexName='GypsyPlaceIndex',
-        Text=text,
-        MaxResults=maxResults
-    )
-
-    return response
+    response = requests.get(f"https://nominatim.openstreetmap.org/search.php?q={text}&format=jsonv2&limit={maxResults}")
+    return json.loads(response.content)
 
 
 @app.post("/api/getRoute/")
