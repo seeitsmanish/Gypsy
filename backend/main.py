@@ -52,10 +52,10 @@ async def getRoute(route: RouteRequest):
             return 0
 
     response = requests.get(
-        f"http://router.project-osrm.org/route/v1/driving/"
-        f"{route.DestinationPosition[0]},{route.DeparturePosition[1]};"
+        f"http://router.project-osrm.org/route/v1/car/"
+        f"{route.DeparturePosition[0]},{route.DeparturePosition[1]};"
         f"{route.DestinationPosition[0]},{route.DestinationPosition[1]}"
-        f"?geometries=geojson&alternatives=true"
+        f"?geometries=geojson&alternatives=false&overview=full"
     )
 
     return json.loads(response.content)
