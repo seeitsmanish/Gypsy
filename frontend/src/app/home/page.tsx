@@ -4,138 +4,100 @@ import { useState, useEffect } from "react";
 
 import {
   Box,
-  Menu,
-  MenuButton,
-  MenuList,
   Stack,
   Card,
   Text,
   CardBody,
-  Input,
-  InputLeftAddon,
-  InputGroup,
-  InputLeftElement,
   Button,
   ButtonGroup,
   Tabs,
   TabList,
-  TabPanels,
   Tab,
-  TabPanel,
   Accordion,
   AccordionItem,
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
-  Flex,
-  FormControl,
-  FormLabel,
-  FormHelperText,
 } from "@chakra-ui/react";
 
-// import { CUIAutoComplete } from "chakra-ui-autocomplete";
+import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
-// For Search ReactSearchAutocomplete
-import { ReactSearchAutocomplete } from 'react-search-autocomplete'
-
-
-
-import FeatherIcon from "feather-icons-react";
+import Weather from "../../../components/Weather";
 import Maps from "../../../components/Maps";
 
 import Image from "next/image";
 import logo from "./Logo.png";
-import map from "./map.png";
 import styles from "./page.module.css";
 
 export default function Home() {
-  const [source, setSource] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const [dest, setDest] = useState("");
-  let [suggestions, setSuggestions] = useState(["NIET", "GNIOT", "IILM"]);
-  
-  // const handleInputChange = (event) => {
-  //   const inputValue = event.target.value;
-  //   setSource(inputValue);
-  //   // fetch suggestions based on input value and update suggestions state
-  //   setSuggestions(["suggestion 1", "suggestion 2", "suggestion 3"]);
-  //   setIsOpen(true);
-  // };
-
-  // const handleMenuItemClick = () => {
-  //   setSuggestions("nIET");
-  //   setIsOpen(false);
-  // };
-
-  // const handleChangeSource = async (event) => {
-  //   setSource(event.target.value);
-  //     if (event.target.value.length >= 3) {
-  //       // setSuggestions([]);
-  //       const response = await fetch(`http://127.0.0.1:8000/api/search/?text=${event.target.value}&maxResults=5`);
-  //       const data = await response.json();
-  //       // setSuggestions(response);
-  //       // data.Results.forEach((result) => {
-  //       //   suggestions.push(result.Place.Label);
-  //       // });
-  //       const newList = [];
-  //       // console.log(data);
-        
-  //       for(let resultIndex = 0; resultIndex < data.Results.length; resultIndex++){
-  //         newList.push(data.Results[resultIndex].Place.Label);
-  //       }
-  //       console.log(newList);
-  //       setSuggestions(newList);
-  //     }
-  //     // console.log(suggestions);
-  // };
-
-  // const handleChangeDest = (event) => {
-  //   setDest(event.target.value);
-  //   console.log(dest);
-  // };
-
+ 
   const [items, setItems] = useState([{}]);
+  const [source, setSource] = useState("");
+  const [lat, setLat] = useState(33);
+  const [lon, setLon] = useState(32);
+
+  const getRoutes = async (event) => {
+    var raw = JSON.stringify({
+      DeparturePosition: sourceCords,
+      DestinationPosition: destCords,
+      DepartureTime: "2023-05-08T23:47:25.244718",
+    });
+    var requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://127.0.0.1:8000/api/getRoute/", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        const data = result["routes"][0]["geometry"]["coordinates"];
+        const temp = [];
+        data.map((routes) => {
+          temp.push([routes[1], routes[0]]);
+        });
+        setTotalRoutes(temp);
+        console.log(totalRoutes);
+      })
+      .catch((error) => console.log("error", error));
+  };
 
   const handleOnSearch = async (string, results) => {
     // onSearch will have as the first callback parameter
     // the string searched and for the second the results.
-
-    const response = await fetch(`http://127.0.0.1:8000/api/search/?text=${string}&maxResults=5`);
-    const data = await response.json();
-    const newList = [];
-    for(let resultIndex = 0; resultIndex < data.Results.length; resultIndex++){
-      newList.push({
-        id: resultIndex,
-        name : data.Results[resultIndex].Place.Label
-      });
+    if(string.length >= 3) {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/search/?text=${string}&maxResults=6`
+      );
+      const data = await response.json();
+      console.log(data);
+      console.log("page.tsx render");
+      const newList = [];
+      for (let resultIndex = 0; resultIndex < data.length; resultIndex++) {
+        newList.push({
+          id: resultIndex,
+          name: data[resultIndex].display_name,
+          lat: data[resultIndex].lat,
+          lon: data[resultIndex].lon,
+        });
+      }
+      setItems(newList);
     }
-    setItems(newList);
-    console.log(newList);
-    console.log(string, results)
-  }
-
-  const handleOnHover = (result) => {
-    // the item hovered
-    console.log(result)
-  }
-
-  const handleOnSelect = (item) => {
-    // the item selected
-    console.log(item)
-  }
-
-  const handleOnFocus = () => {
-    console.log('Focused')
-  }
+  };
 
   const formatResult = (item) => {
     return (
       <>
         {/* <span style={{ display: 'block', textAlign: 'left' }}>id: {item.id}</span> */}
-        <span style={{ display: 'block', textAlign: 'left' }}>{item.name}</span>
+        <span>{item.name}</span>
       </>
-    )
-  }
+    );
+  };
+  const setInput = (value) => {
+    setLat(value.lat);
+    setLon(value.lon);
+  };
 
   return (
     <div>
@@ -165,32 +127,24 @@ export default function Home() {
             </Tabs>
 
             <Stack spacing={2}>
-              <div className={styles.inputGrp}>
-                <FeatherIcon icon="arrow-up-right" />
+              {/* For Search AutoComplete */}
 
-                {/* For Search AutoComplete */}
-                <div className="App">
-                  <header className="App-header">
-                    <div style={{ width: 400 }}>
-                      <ReactSearchAutocomplete
-                        items={items}
-                        onSearch={handleOnSearch}
-                        onHover={handleOnHover}
-                        onSelect={handleOnSelect}
-                        onFocus={handleOnFocus}
-                        autoFocus
-                        formatResult={formatResult}
-                      />
-                    </div>
-                  </header>
-                </div>
+              <ReactSearchAutocomplete
+                className={styles.search_input}
+                items={items}
+                onSearch={handleOnSearch}
+                formatResult={formatResult}
+                onSelect={setInput}
+              />
 
-              </div>
+              <ReactSearchAutocomplete
+                className={styles.pointer}
+                items={items}
+                onSearch={handleOnSearch}
+                formatResult={formatResult}
+              />
 
-              <div className={styles.inputGrp}>
-                <FeatherIcon icon="arrow-down" />
-
-              </div>
+              <Weather lat={lat} lon={lon} />
             </Stack>
           </Stack>
 
@@ -212,7 +166,9 @@ export default function Home() {
             align="center"
             className={styles.spacing}
           >
-            <Button colorScheme="blue">Safety Mode</Button>
+            <Button colorScheme="blue" className={styles.spacing}>
+              Safety Mode
+            </Button>
             <Text fontSize="xs">Recommended</Text>
           </Stack>
 
@@ -227,7 +183,7 @@ export default function Home() {
 
           <Card>
             <CardBody>
-              <Accordion defaultIndex={[2]} allowToggle>
+              <Accordion defaultIndex={[0]} allowToggle>
                 <AccordionItem>
                   <h2>
                     <AccordionButton>
@@ -282,14 +238,6 @@ export default function Home() {
           </Card>
         </div>
       </div>
-
-      {/* <Image
-        className={styles.map}
-        src={map}
-        width={"100vw"}
-        height={"100vh"}
-        alt="Map"
-      /> */}
 
       <Maps className={styles.map} />
     </div>

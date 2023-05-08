@@ -1,0 +1,24 @@
+.display {
+  /* position: relative; */
+  /* top: -1.9em; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 0.5em;
+  gap: 5px;
+}
+
+.data {
+  color: #3182ce;
+  font-weight: bold;
+}
+
+.division {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+}
+
+.icon {
+  color: #3182ce;
+}
