@@ -36,7 +36,7 @@ async def search(text: str, maxResults: int=5):
     """
     Autocompletion Support
     """
-    response = client.search_place_index_for_position(
+    response = client.search_place_index_for_text(
         IndexName="GypsyPlaceIndex",
         Text=text,
         MaxResults=maxResults
