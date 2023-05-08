@@ -32,12 +32,21 @@ client = boto3.client('location', region_name='ap-south-1')
 
 
 @app.get("/api/search/")
-async def search(text: str, maxResults: int = 5):
+async def search(text: str, maxResults: int=5):
     """
     Autocompletion Support
     """
-    response = requests.get(f"https://nominatim.openstreetmap.org/search.php?q={text}&format=jsonv2&limit={maxResults}")
-    return json.loads(response.content)
+    response = client.search_place_index_for_index(
+        IndexName="GypsyPlaceIndex",
+        Text=text,
+        MaxResults=maxResults
+    )
+
+    return response
+
+    # uncomment for using openstreetmaps api
+    # response = requests.get(f"https://nominatim.openstreetmap.org/search.php?q={text}&format=jsonv2&limit={maxResults}")
+    # return json.loads(response.content)
 
 
 @app.post("/api/getRoute/")
@@ -55,10 +64,18 @@ async def getRoute(route: RouteRequest):
         f"http://router.project-osrm.org/route/v1/car/"
         f"{route.DeparturePosition[0]},{route.DeparturePosition[1]};"
         f"{route.DestinationPosition[0]},{route.DestinationPosition[1]}"
-        f"?geometries=geojson&alternatives=false&overview=full"
+        f"?geometries=geojson&alternatives=true&overview=full"
     )
 
-    return json.loads(response.content)
+    routes = json.loads(response.content)["routes"]
+    res = []
+    for route in routes:
+        ls = route["geometry"]["coordinates"]
+        for l in ls:
+            l[:] = reversed(l[:])
+        res.append(ls)
+    
+    return res
 
 
 @app.post("/api/getRoutes")
