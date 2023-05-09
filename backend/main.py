@@ -106,7 +106,7 @@ async def getRoute(route: RouteRequest):
     return listWithDistDurAndRoutes
 
 
-@app.post("/api/getRoutes")
+@app.post("/api/getRoutes/")
 async def getRoutes(route: RouteRequest):
     """
     Get multiple routes for different times.
@@ -138,7 +138,7 @@ async def getRoutes(route: RouteRequest):
     }
 
 
-@app.post("/api/getSafestPath")
+@app.post("/api/getSafestPath/")
 async def getSafestPath(route: RouteRequest):
     """
     Get Safest Path
