@@ -33,23 +33,14 @@ import styles from "./page.module.css";
 export default function Home() {
   const [items, setItems] = useState([{}]);
   // const [source, setSource] = useState("");
-<<<<<<< HEAD
   const [sourceName, setSourceName] = useState("");
   const [destName, setDestName] = useState("");
-  const [sourceCords, setSourceCords] = useState([32.4832324, 33.324234]);
-  const [destCords, setDestCords] = useState([32.532352, 33.234342]);
-  const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
-  const [loading, setLoading] = useState(false);
-=======
-  const [sourceName , setSourceName] = useState('');
-  const [destName , setDestName] = useState('');
   const [sourceCords, setSourceCords] = useState([32.4832324, 77.324234]);
   const [destCords, setDestCords] = useState([32.532352, 33.234342]);
   const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
-  const [loading , setLoading] = useState(false);
-  const [distance , setDistance] = useState(0.00);
-  const [time , setTime] = useState('');
->>>>>>> d713f45df3659ca17fe6a55ded5e81d4aeb5f3ed
+  const [loading, setLoading] = useState(false);
+  const [distance, setDistance] = useState(0.0);
+  const [time, setTime] = useState("");
 
   // useEffect(() => {
   //   console.log();
@@ -83,11 +74,10 @@ export default function Home() {
       var seconds = data[0].duration;
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
-      if(hours === 0) {
-        setTime(`${minutes} mins`)
-      }
-      else{
-        setTime(`${hours}hrs ${minutes}mins`)
+      if (hours === 0) {
+        setTime(`${minutes} mins`);
+      } else {
+        setTime(`${hours}hrs ${minutes}mins`);
       }
       setDistance(dist);
       setLoading(false);

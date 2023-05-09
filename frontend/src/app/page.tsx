@@ -2,25 +2,23 @@
 
 import Image from "next/image";
 import styles from "./page.module.css";
+import Link from "next/link";
 
 export default function Home() {
-  var raw = JSON.stringify({
-    DeparturePosition: [77.14287, 28.67554],
-    DestinationPosition: [77.31647, 28.65956],
-    DepartureTime: "2023-05-08T23:47:25.244718",
-  });
+  return (
+    <main className={styles.main}>
+      <Link href="/home" className={styles.btn}>
+        Try Gypsy Maps
+      </Link>
 
-  var requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: raw,
-    redirect: "follow",
-  };
-
-  fetch("http://127.0.0.1:8000/api/getRoute/", requestOptions)
-    .then((response) => response.text())
-    .then((result) => console.log(result))
-    .catch((error) => console.log("error", error));
-
-  return <main className={styles.main}></main>;
+      <script
+        type="module"
+        src="https://unpkg.com/@splinetool/viewer@0.9.327/build/spline-viewer.js"
+      ></script>
+      <spline-viewer
+        className={styles.spline}
+        url="https://prod.spline.design/IkaM8VFGB5Mff2um/scene.splinecode"
+      ></spline-viewer>
+    </main>
+  );
 }

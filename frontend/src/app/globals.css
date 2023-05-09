@@ -22,3 +22,7 @@ body {
 .padding-vertical {
   padding: 1em 0;
 }
+
+#logo {
+  display: none;
+}
