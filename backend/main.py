@@ -66,16 +66,28 @@ async def getRoute(route: RouteRequest):
         f"{route.DestinationPosition[0]},{route.DestinationPosition[1]}"
         f"?geometries=geojson&alternatives=true&overview=full"
     )
-
+    
     routes = json.loads(response.content)["routes"]
+    # print(routes)
+    
+    listWithDistDurAndRoutes = []
     res = []
     for route in routes:
         ls = route["geometry"]["coordinates"]
         for l in ls:
             l[:] = reversed(l[:])
         res.append(ls)
+        Place = {}
+        Place['distance'] = route['legs'][0]['distance']
+        Place['duration'] =  route['legs'][0]['duration']
+        Place['route'] = ls
+
+        listWithDistDurAndRoutes.append(Place)
+
     
-    return res
+    listWithDistDurAndRoutes
+
+    return listWithDistDurAndRoutes
 
 
 @app.post("/api/getRoutes")
@@ -107,4 +119,4 @@ async def getRoutes(route: RouteRequest):
     
     return {
         "data": responses
-    }
+    
