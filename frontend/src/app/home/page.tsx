@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState , useEffect} from "react";
 
 import {
   Box,
@@ -29,50 +29,97 @@ import Image from "next/image";
 import logo from "./Logo.png";
 import styles from "./page.module.css";
 
+
+
 export default function Home() {
  
   const [items, setItems] = useState([{}]);
-  const [source, setSource] = useState("");
-  const [lat, setLat] = useState(33);
-  const [lon, setLon] = useState(32);
+  // const [source, setSource] = useState("");
+  const [lat, setLat] = useState();
+  const [lon, setLon] = useState();
+  const [sourceCords , setSourceCords] = useState([32.4832324,33.324234]);
+  const [destCords , setDestCords] = useState([32.532352,33.234342]);
+  const [totalRoutes , setTotalRoutes] = useState([[28.675538 , 77.316325]]);
 
-  const getRoutes = async (event) => {
-    var raw = JSON.stringify({
-      DeparturePosition: sourceCords,
-      DestinationPosition: destCords,
-      DepartureTime: "2023-05-08T23:47:25.244718",
-    });
-    var requestOptions = {
+  // useEffect(() => {
+  //   console.log();
+  // }, [lat])
+
+  const getRoutes = async () => {
+      
+    // console.log(src,dest);
+    try {
+      const routes = await fetch(`http://127.0.0.1:8000/api/getRoute`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: raw,
-      redirect: "follow",
-    };
-
-    fetch("http://127.0.0.1:8000/api/getRoute/", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        const data = result["routes"][0]["geometry"]["coordinates"];
-        const temp = [];
-        data.map((routes) => {
-          temp.push([routes[1], routes[0]]);
-        });
-        setTotalRoutes(temp);
-        console.log(totalRoutes);
-      })
-      .catch((error) => console.log("error", error));
+      body: JSON.stringify({
+        "DeparturePosition": sourceCords,
+        "DestinationPosition": destCords,
+        "DepartureTime": '2023-05-08T23:23:20.735Z',
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    });
+    const data = await routes.json();
+    const route = data.routes[0].geometry.coordinates;
+    for(let coordinateIndex = 0; coordinateIndex < route.length; coordinateIndex++) {
+      route[coordinateIndex] = route[coordinateIndex].reverse();
+    }
+    console.log(destCords);
+    setTotalRoutes(route);
+    // return route;
+    } catch (error) {
+      console.log(error);
+    }  
   };
+
+  // const handleChangeSource = async (event) => {
+  //   setSource(event.target.value);
+  //   if (event.target.value.length >= 3) {
+  //     setSuggestions([]);
+  //     const response = await fetch(
+  //       `http://127.0.0.1:8000/api/search/?text=${event.target.value}&maxResults=5`
+  //     );
+  //     const data = await response.json();
+  //     setSourceCords(data["Results"][0]["Place"]["Geometry"]["Point"]);
+  //     // setSuggestions(response);
+  //     data.Results.forEach((result) => {
+  //       suggestions.push(result.Place.Label);
+  //     });
+  //   }
+  //   // console.log(suggestions);
+  //   console.log(sourceCords);
+  // };
+
+  // const handleChangeDest = async (event) => {
+  //   setDest(event.target.value);
+  //   if (event.target.value.length >= 3) {
+  //     setSuggestions([]);
+  //     const response = await fetch(
+  //       `http://127.0.0.1:8000/api/search/?text=${event.target.value}&maxResults=5`
+  //     );
+  //     const data = await response.json();
+  //     console.log(data);
+  //     setDestCords(data["Results"][0]["Place"]["Geometry"]["Point"]);
+  //     data.Results.forEach((result) => {
+  //       suggestions.push(result.Place.label);
+  //     });
+  //     // getRoutes(event);
+  //   }
+  //   // console.log(suggestions);
+  //   console.log(destCords);
+  // };
 
   const handleOnSearch = async (string, results) => {
     // onSearch will have as the first callback parameter
     // the string searched and for the second the results.
     if(string.length >= 3) {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/search/?text=${string}&maxResults=6`
+        `http://127.0.0.1:8000/api/search/?text=${string}&maxResults=5`
       );
       const data = await response.json();
-      console.log(data);
-      console.log("page.tsx render");
+      // console.log(data);
+      // console.log("pasge.tsx render");
       const newList = [];
       for (let resultIndex = 0; resultIndex < data.length; resultIndex++) {
         newList.push({
@@ -97,7 +144,12 @@ export default function Home() {
   const setInput = (value) => {
     setLat(value.lat);
     setLon(value.lon);
+    setSourceCords([value.lon , value.lat]);
   };
+  const setOutput = (value) => {
+    setDestCords([value.lon , value.lat]);
+    getRoutes();
+  }
 
   return (
     <div>
@@ -142,9 +194,10 @@ export default function Home() {
                 items={items}
                 onSearch={handleOnSearch}
                 formatResult={formatResult}
+                onSelect={setOutput}
               />
 
-              <Weather lat={lat} lon={lon} />
+              {/* <Weather lat={lat} lon={lon} /> */}
             </Stack>
           </Stack>
 
@@ -239,7 +292,7 @@ export default function Home() {
         </div>
       </div>
 
-      <Maps className={styles.map} />
+      <Maps  totalRoutes={totalRoutes} className={styles.map} />
     </div>
   );
 }

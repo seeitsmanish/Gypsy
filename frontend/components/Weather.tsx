@@ -1,10 +1,11 @@
 "use client";
+import React from "react";
 import { useEffect, useState } from "react";
 
 import styles from "../styles/weather.module.css";
 import FeatherIcon from "feather-icons-react";
 
-export default function Weather({ lat, lon }) {
+function Weather({ lat, lon }) {
   const [weatherObj, setWeatherObj] = useState({
     temp: 0,
     weather: "Not Available",
@@ -52,3 +53,5 @@ export default function Weather({ lat, lon }) {
     </div>
   );
 }
+
+export default React.memo(Weather);
