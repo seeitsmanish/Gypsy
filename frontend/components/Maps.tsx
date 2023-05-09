@@ -35,12 +35,11 @@ const redOptions = { color: "red" };
 
 export default function Maps({ totalRoutes, source, destination, sourceName, destName }) {
   const multiPolyline = totalRoutes;
-  const position = [28.675538, 77.316325];
   // console.log(multiPolyline);
   return (
     <MapContainer
       className={styles.map_container}
-      center={position}
+      center={source}
       zoom={15}
       style={{ backgroundColor: "#ceedf5" }}
       scrollWheelZoom={true}

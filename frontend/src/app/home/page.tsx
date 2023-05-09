@@ -233,7 +233,7 @@ export default function Home() {
 
           <Card className={styles.spacing}>
             <CardBody>
-              <Accordion defaultIndex={[0]} allowToggle>
+              <Accordion defaultIndex={[0]}>
                 <AccordionItem>
                   <h2>
                     <AccordionButton>
