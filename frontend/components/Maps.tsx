@@ -35,7 +35,7 @@ export default function Maps({ totalRoutes,safeRoutes, source, destination, sour
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <Polyline pathOptions={{color:'blue'}} positions={safeRoutes} />
-      {/* <Polyline pathOptions={limeOptions} positions={multiPolyline} /> */}
+      <Polyline pathOptions={limeOptions} positions={multiPolyline} />
       <Marker position={source}>
         <Popup>
           Source <br /> NIET College Plot 14
