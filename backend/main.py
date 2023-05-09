@@ -7,6 +7,7 @@ import json
 import boto3
 import random
 import requests
+import networkx as nx
 
 
 
@@ -15,8 +16,11 @@ class RouteRequest(BaseModel):
     DestinationPosition: List[float]
     DepartureTime: str = datetime.now().isoformat()
 
+OVERPASS_URL = "http://overpass-api.de/api/interpreter"
+
 
 app = FastAPI()
+client = boto3.client('location', region_name='ap-south-1')
 
 origins = ["*"]
 
@@ -28,7 +32,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = boto3.client('location', region_name='ap-south-1')
+
+
+def coord_to_id(coord):
+    overpass_query = f"""
+    [out:json];
+    node(around:20, {coord[1]}, {coord[0]});
+    out;
+    """
+    response = requests.get(OVERPASS_URL, params={'data': overpass_query})
+    id_ = response.json()["elements"][0]["id"]
+    return id_
+
+def id_to_coord(id_):
+    overpass_query = f"""
+    [out:json];
+    node({id_});
+    out;
+    """
+    response = requests.get(OVERPASS_URL, params={'data': overpass_query})
+    lat = response.json()["elements"][0]["lat"]
+    lon = response.json()["elements"][0]["lon"]
+    return [lat, lon] 
 
 
 @app.get("/api/search/")
@@ -54,12 +79,6 @@ async def getRoute(route: RouteRequest):
     """
     Get the Route Info Based on src and dest (in Lat & Long)
     """
-    def random_bit(p):
-        if random.random() < p:
-            return 1
-        else:
-            return 0
-
     response = requests.get(
         f"http://router.project-osrm.org/route/v1/car/"
         f"{route.DeparturePosition[0]},{route.DeparturePosition[1]};"
@@ -83,9 +102,6 @@ async def getRoute(route: RouteRequest):
         Place['route'] = ls
 
         listWithDistDurAndRoutes.append(Place)
-
-    
-    listWithDistDurAndRoutes
 
     return listWithDistDurAndRoutes
 
@@ -120,3 +136,64 @@ async def getRoutes(route: RouteRequest):
     return {
         "data": responses
     }
+
+
+@app.post("/api/getSafestPath")
+async def getSafestPath(route: RouteRequest):
+    """
+    Get Safest Path
+    """
+    response = requests.get(
+            f"http://router.project-osrm.org/route/v1/car/"
+            f"{route.DeparturePosition[0]},{route.DeparturePosition[1]};"
+            f"{route.DestinationPosition[0]},{route.DestinationPosition[1]}"
+            f"?geometries=geojson&alternatives=true&overview=full"
+        )
+
+    routes = json.loads(response.content)["routes"]    
+    optimal_path = routes[0]["geometry"]["coordinates"]
+
+    maxLon, maxLat, minLon, minLat = -181, -91, 181, 91
+    for long, lat in optimal_path:
+        maxLon, maxLat, minLon, minLat = max(maxLon, long),max(maxLat, lat),min(minLon, long),min(minLat, lat)
+    
+    # creating bbox
+    south, north, west, east = minLat, maxLat, minLon, maxLon
+    bbox = f"{south},{west},{north},{east}"
+    
+    # creating overpass query
+    overpass_url = "http://overpass-api.de/api/interpreter"
+    overpass_query = f"""
+    [out:json];
+    (
+        node({bbox});
+        way({bbox});
+    );
+    out;
+    """
+    response = requests.get(overpass_url, params={"data": overpass_query})
+    graph_data = response.json()
+
+    # creating Graph
+    G = nx.Graph()
+    for element in graph_data["elements"]:
+        if element["type"] == "node":
+            G.add_node(element["id"], lat=element["lat"], lon=element["lon"])
+        if element["type"] == "way":
+            nodes = element["nodes"]
+            for i in range(len(nodes)-1):
+                G.add_edge(nodes[i], nodes[i+1])
+        
+    # getting source and destination id
+    src_id = coord_to_id(route.DeparturePosition)
+    dest_id = coord_to_id(route.DestinationPosition)
+
+    # assigning random weights
+    for u, v in G.edges:
+        G.edges[u,v]['weight'] = random.randint(1, 10)
+    
+    safe_path = nx.dijkstra_path(G, src_id, dest_id)
+    safe_path_coord = list(map(id_to_coord, safe_path))
+
+    return safe_path_coord
+     
