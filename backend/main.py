@@ -103,9 +103,6 @@ async def getRoute(route: RouteRequest):
 
         listWithDistDurAndRoutes.append(Place)
 
-    
-    listWithDistDurAndRoutes
-
     return listWithDistDurAndRoutes
 
 
