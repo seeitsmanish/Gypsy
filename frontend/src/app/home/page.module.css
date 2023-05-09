@@ -41,17 +41,12 @@
 
 .spacing {
   margin-top: 0.8em;
-  /* z-index: -999; */
 }
 
 .main_content {
   padding: 20px;
   padding-top: 0;
 }
-/* 
-.input_bg {
-  background-color: white;
-} */
 
 .map {
   z-index: -1;
@@ -63,6 +58,5 @@
   position: absolute;
   margin-top: 22%;
   transform: scale(2);
-  /* top: 100%; */
   left: 50%;
 }
