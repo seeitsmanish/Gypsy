@@ -35,10 +35,12 @@ export default function Home() {
   // const [source, setSource] = useState("");
   const [sourceName , setSourceName] = useState('');
   const [destName , setDestName] = useState('');
-  const [sourceCords, setSourceCords] = useState([32.4832324, 33.324234]);
+  const [sourceCords, setSourceCords] = useState([32.4832324, 77.324234]);
   const [destCords, setDestCords] = useState([32.532352, 33.234342]);
   const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
   const [loading , setLoading] = useState(false);
+  const [distance , setDistance] = useState(0.00);
+  const [time , setTime] = useState(0.00);
 
   // useEffect(() => {
   //   console.log();
@@ -66,7 +68,13 @@ export default function Home() {
       //   route[coordinateIndex] = route[coordinateIndex].reverse();
       // }
       // console.log(destCords);
-      setTotalRoutes([data[0]]);
+      setTotalRoutes(data[0].route);
+      var dist = data[0].distance;
+      dist = (dist / 1000).toFixed(1);
+      var t = data[0].duration;
+      t = (t / 3600).toFixed(2);
+      setTime(t);
+      setDistance(dist);
       setLoading(false);
       // return route;
     } catch (error) {
@@ -208,12 +216,12 @@ export default function Home() {
           <Stack spacing={1}>
             <Text className={styles.spacing}>
               <span>Distance: </span>
-              <span className="cl-blue bold">1.9 KM</span>
+              <span className="cl-blue bold">{`${distance} Km`}</span>
             </Text>
 
             <Text>
               <span>Duration: </span>
-              <span className="cl-blue bold">20 Minutes</span>
+              <span className="cl-blue bold">{`${time} hr`}</span>
             </Text>
           </Stack>
 
