@@ -34,7 +34,8 @@ export default function Maps({ totalRoutes,safeRoutes, source, destination, sour
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">Gypsy Maps</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Polyline pathOptions={limeOptions} positions={multiPolyline} />
+      <Polyline pathOptions={{color:'blue'}} positions={safeRoutes} />
+      {/* <Polyline pathOptions={limeOptions} positions={multiPolyline} /> */}
       <Marker position={source}>
         <Popup>
           Source <br /> NIET College Plot 14
@@ -46,7 +47,6 @@ export default function Maps({ totalRoutes,safeRoutes, source, destination, sour
         </Popup>
       </Marker>
       <ZoomControl position="bottomright" />
-      <Polyline pathOptions={{color:'blue'}} positions={safeRoutes} />
 
     </MapContainer>
   );
