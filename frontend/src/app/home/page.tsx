@@ -39,6 +39,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [distance, setDistance] = useState(0.0);
   const [time, setTime] = useState("");
+  const [safeRoutes, setSafeRoutes] = useState([[]]);
 
   const getRoutes = async () => {
     try {
@@ -48,7 +49,7 @@ export default function Home() {
         body: JSON.stringify({
           DeparturePosition: sourceCords,
           DestinationPosition: destCords,
-          DepartureTime: "2023-05-08T23:23:20.735Z",
+          DepartureTime: `${new Date()}`,
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -73,6 +74,32 @@ export default function Home() {
       console.log(error);
     }
   };
+  
+  const getSafeRoute = async () =>{
+
+    try {
+      setLoading(true);
+      const routes = await fetch(`http://127.0.0.1:8000/api/getSafestPath`, {
+        method: "POST",
+        body: JSON.stringify({
+          DeparturePosition: sourceCords,
+          DestinationPosition: destCords,
+          DepartureTime: `${new Date()}`,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          'Accept': 'application/json'
+        },
+      });
+      const data = await routes.json();
+      console.log(data);
+      setSafeRoutes(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
 
   const handleOnSearch = async (string) => {
     // onSearch will have as the first callback parameter
@@ -183,7 +210,7 @@ export default function Home() {
             align="baseline"
             className={styles.spacing}
           >
-            <Button colorScheme="blue" className={styles.spacing}>
+             <Button colorScheme="blue" className={styles.spacing} onClick = {getSafeRoute}>
               Safety Route
             </Button>
             <Button colorScheme="blue" variant="outline" onClick={getRoutes}>
@@ -260,6 +287,7 @@ export default function Home() {
       ) : (
         <Maps
           totalRoutes={totalRoutes}
+          safeRoutes={safeRoutes}
           source={[sourceCords[1], sourceCords[0]]}
           destination={[destCords[1], destCords[0]]}
           sourceName={sourceName}

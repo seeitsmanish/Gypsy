@@ -138,7 +138,7 @@ async def getRoutes(route: RouteRequest):
     }
 
 
-@app.post("/api/getSafestPath")
+@app.post("/api/getSafestPath/")
 async def getSafestPath(route: RouteRequest):
     """
     Get Safest Path
