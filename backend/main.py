@@ -215,7 +215,7 @@ async def getSafestPath(route: RouteRequest):
         safe_path_coord = []
         for safe_path_node in safe_path:
             node = G.nodes[safe_path_node]
-            safe_path_coord.append([node["lat"], node["lon"]])
+            safe_path_coord.append([node["lon"], node["lat"]])
 
         # safe_path_coord = list(map(id_to_coord, safe_path))
         return safe_path_coord
