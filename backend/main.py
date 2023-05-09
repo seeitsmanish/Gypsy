@@ -159,7 +159,11 @@ async def getSafestPath(route: RouteRequest):
     
     # creating bbox
     south, north, west, east = minLat, maxLat, minLon, maxLon
-    bbox = f"{south},{west},{north},{east}"
+    margin = 0.1
+    lat_margin = margin * (maxLat - minLat)
+    lon_margin = margin * (maxLon - minLon)
+
+    bbox = f"{south-lat_margin},{west-lon_margin},{north+lat_margin},{east-lon_margin}"
     
     # creating overpass query
     overpass_url = "http://overpass-api.de/api/interpreter"
@@ -184,16 +188,38 @@ async def getSafestPath(route: RouteRequest):
             for i in range(len(nodes)-1):
                 G.add_edge(nodes[i], nodes[i+1])
         
+
+
     # getting source and destination id
     src_id = coord_to_id(route.DeparturePosition)
     dest_id = coord_to_id(route.DestinationPosition)
+    
+    # verification
+    print(len(optimal_path))
+    count = 0
+    for node in optimal_path:
+        node_id = coord_to_id(node)
+        for node in G.nodes:
+            if node_id == node:
+                count += 1
+                break
+    print(count)
 
     # assigning random weights
     for u, v in G.edges:
-        G.edges[u,v]['weight'] = random.randint(1, 10)
+        # G.edges[u,v]['weight'] = random.randint(1, 1)
+        G.edges[u,v]['weight'] = 1
     
-    safe_path = nx.dijkstra_path(G, src_id, dest_id)
-    safe_path_coord = list(map(id_to_coord, safe_path))
+    try:
+        safe_path = nx.dijkstra_path(G, src_id, dest_id)
+        safe_path_coord = []
+        for safe_path_node in safe_path:
+            node = G.nodes[safe_path_node]
+            safe_path_coord.append([node["lat"], node["lon"]])
 
-    return safe_path_coord
+        # safe_path_coord = list(map(id_to_coord, safe_path))
+        return safe_path_coord
+    except Exception as e:
+        return optimal_path
+
      
