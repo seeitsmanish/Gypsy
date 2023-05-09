@@ -150,7 +150,7 @@ async def getSafestPath(route: RouteRequest):
             f"?geometries=geojson&alternatives=true&overview=full"
         )
 
-    routes = json.loads(response.content)["routes"]    
+    routes = json.loads(response.content)["routes"]
     optimal_path = routes[0]["geometry"]["coordinates"]
 
     maxLon, maxLat, minLon, minLat = -181, -91, 181, 91
@@ -194,17 +194,6 @@ async def getSafestPath(route: RouteRequest):
     src_id = coord_to_id(route.DeparturePosition)
     dest_id = coord_to_id(route.DestinationPosition)
     
-    # verification
-    print(len(optimal_path))
-    count = 0
-    for node in optimal_path:
-        node_id = coord_to_id(node)
-        for node in G.nodes:
-            if node_id == node:
-                count += 1
-                break
-    print(count)
-
     # assigning random weights
     for u, v in G.edges:
         # G.edges[u,v]['weight'] = random.randint(1, 1)
@@ -215,11 +204,13 @@ async def getSafestPath(route: RouteRequest):
         safe_path_coord = []
         for safe_path_node in safe_path:
             node = G.nodes[safe_path_node]
-            safe_path_coord.append([node["lon"], node["lat"]])
+            safe_path_coord.append([node["lat"], node["lon"]])
 
         # safe_path_coord = list(map(id_to_coord, safe_path))
         return safe_path_coord
     except Exception as e:
+        for l in optimal_path:
+            l[:] = reversed(l[:])
         return optimal_path
 
      
