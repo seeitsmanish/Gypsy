@@ -26,3 +26,10 @@ body {
 #logo {
   display: none;
 }
+
+/*  */
+canvas {
+  min-height: 80vh;
+  width: 100vw;
+  background-color: rgb(5, 38, 71);
+}

@@ -1,31 +1,15 @@
-.main {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6rem;
-  min-height: 100vh;
-}
-
 .btn {
   padding: 1em;
   color: white;
   background-color: #3182ce;
   font-weight: bold;
   border-radius: 5px;
+  text-align: center;
+  margin: 2em;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .btn:hover {
   background-color: #4299e1;
   transform: translate(0, -2px);
-}
-
-.spline {
-  width: 100%;
-  height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -9999;
 }
