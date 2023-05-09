@@ -196,8 +196,7 @@ async def getSafestPath(route: RouteRequest):
     
     # assigning random weights
     for u, v in G.edges:
-        # G.edges[u,v]['weight'] = random.randint(1, 1)
-        G.edges[u,v]['weight'] = 1
+        G.edges[u,v]['weight'] = random.randint(1, 10)
     
     try:
         safe_path = nx.dijkstra_path(G, src_id, dest_id)
