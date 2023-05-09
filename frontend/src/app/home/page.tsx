@@ -18,6 +18,7 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  Spinner,
 } from "@chakra-ui/react";
 
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
@@ -37,6 +38,7 @@ export default function Home() {
   const [sourceCords, setSourceCords] = useState([32.4832324, 33.324234]);
   const [destCords, setDestCords] = useState([32.532352, 33.234342]);
   const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
+  const [loading , setLoading] = useState(false);
 
   // useEffect(() => {
   //   console.log();
@@ -45,6 +47,7 @@ export default function Home() {
   const getRoutes = async () => {
     // console.log(src,dest);
     try {
+      setLoading(true);
       const routes = await fetch(`http://127.0.0.1:8000/api/getRoute`, {
         method: "POST",
         body: JSON.stringify({
@@ -64,6 +67,7 @@ export default function Home() {
       // }
       // console.log(destCords);
       setTotalRoutes([data[0]]);
+      setLoading(false);
       // return route;
     } catch (error) {
       console.log(error);
@@ -284,6 +288,16 @@ export default function Home() {
           </Card>
         </div>
       </div>
+      {
+        loading ? <Spinner
+        thickness='8px'
+        speed='0.65s'
+        emptyColor='gray.200'
+        color='blue.500'
+        size='xl'
+        className={styles.spinner}
+      /> :
+      
       <Maps
         totalRoutes={totalRoutes}
         source={[sourceCords[1], sourceCords[0]]}
@@ -291,7 +305,7 @@ export default function Home() {
         sourceName = {sourceName}
         destName = {destName}
         className={styles.map}
-      />
+      />}
     </div>
   );
 }
