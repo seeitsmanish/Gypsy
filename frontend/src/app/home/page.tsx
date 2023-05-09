@@ -32,6 +32,7 @@ import styles from "./page.module.css";
 export default function Home() {
   const [items, setItems] = useState([{}]);
   // const [source, setSource] = useState("");
+<<<<<<< HEAD
   const [sourceName, setSourceName] = useState("");
   const [destName, setDestName] = useState("");
   const [sourceCords, setSourceCords] = useState([32.4832324, 77.324234]);
@@ -40,6 +41,16 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [distance, setDistance] = useState(0.0);
   const [time, setTime] = useState("");
+=======
+  const [sourceName , setSourceName] = useState('');
+  const [destName , setDestName] = useState('');
+  const [sourceCords, setSourceCords] = useState([32.4832324, 77.324234]);
+  const [destCords, setDestCords] = useState([32.532352, 33.234342]);
+  const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
+  const [loading , setLoading] = useState(false);
+  const [distance , setDistance] = useState(0.00);
+  const [time , setTime] = useState('');
+>>>>>>> 0695eb6ec812a3ea85c2a4511d70ea85dbd28d46
   const [safeRoutes, setSafeRoutes] = useState([[]]);
 
   // useEffect(() => {
@@ -112,7 +123,12 @@ export default function Home() {
     }
   };
 
+<<<<<<< HEAD
   const getSafeRoute = async (event) => {
+=======
+  const getSafeRoute = async (event) =>{
+
+>>>>>>> 0695eb6ec812a3ea85c2a4511d70ea85dbd28d46
     try {
       setLoading(true);
       const routes = await fetch("http://127.0.0.1:8000/api/getSafestPath", {
@@ -124,7 +140,11 @@ export default function Home() {
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8",
+<<<<<<< HEAD
           Accept: "application/json",
+=======
+          'Accept': 'application/json'
+>>>>>>> 0695eb6ec812a3ea85c2a4511d70ea85dbd28d46
         },
       });
       const data = await routes.json();
@@ -147,7 +167,12 @@ export default function Home() {
     } catch (error) {
       console.log(error);
     }
+<<<<<<< HEAD
   };
+=======
+
+  }
+>>>>>>> 0695eb6ec812a3ea85c2a4511d70ea85dbd28d46
 
   const formatResult = (item) => {
     return (
@@ -233,11 +258,15 @@ export default function Home() {
             align="baseline"
             className={styles.spacing}
           >
+<<<<<<< HEAD
             <Button
               colorScheme="blue"
               className={styles.spacing}
               onClick={getSafeRoute}
             >
+=======
+            <Button colorScheme="blue" className={styles.spacing} onClick = {getSafeRoute}>
+>>>>>>> 0695eb6ec812a3ea85c2a4511d70ea85dbd28d46
               Safety Route
             </Button>
             <Button colorScheme="blue" variant="outline" onClick={getRoutes}>
@@ -302,6 +331,7 @@ export default function Home() {
           </Card>
         </div>
       </div>
+<<<<<<< HEAD
       {loading ? (
         <Spinner
           thickness="8px"
@@ -322,6 +352,27 @@ export default function Home() {
           className={styles.map}
         />
       )}
+=======
+      {
+        loading ? <Spinner
+        thickness='8px'
+        speed='0.65s'
+        emptyColor='gray.200'
+        color='blue.500'
+        size='xl'
+        className={styles.spinner}
+      /> :
+      
+      <Maps
+        totalRoutes={totalRoutes}
+        safeRoutes={safeRoutes} 
+        source={[sourceCords[1], sourceCords[0]]}
+        destination={[destCords[1], destCords[0]]}
+        sourceName = {sourceName}
+        destName = {destName}
+        className={styles.map}
+      />}
+>>>>>>> 0695eb6ec812a3ea85c2a4511d70ea85dbd28d46
     </div>
   );
 }

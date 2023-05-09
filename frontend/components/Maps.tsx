@@ -40,7 +40,7 @@ export default function Maps({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">Gypsy Maps</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Polyline pathOptions={{ color: "red" }} positions={safeRoutes} />
+      <Polyline pathOptions={{ color: "blue" }} positions={safeRoutes} />
       <Polyline pathOptions={limeOptions} positions={multiPolyline} />
       <Marker position={source}>
         <Popup>

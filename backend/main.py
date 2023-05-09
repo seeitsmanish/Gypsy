@@ -204,6 +204,7 @@ async def getSafestPath(route: RouteRequest):
         for safe_path_node in safe_path:
             node = G.nodes[safe_path_node]
             safe_path_coord.append([node["lat"], node["lon"]])
+<<<<<<< HEAD
 
         # safe_path_coord = list(map(id_to_coord, safe_path))
         return safe_path_coord
@@ -213,3 +214,14 @@ async def getSafestPath(route: RouteRequest):
         return optimal_path
 
      
+=======
+
+        # safe_path_coord = list(map(id_to_coord, safe_path))
+        return safe_path_coord
+    except Exception as e:
+        for l in optimal_path:
+            l[:] = reversed(l[:])
+        return optimal_path
+
+     
+>>>>>>> 0695eb6ec812a3ea85c2a4511d70ea85dbd28d46
