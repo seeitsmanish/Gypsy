@@ -33,12 +33,23 @@ import styles from "./page.module.css";
 export default function Home() {
   const [items, setItems] = useState([{}]);
   // const [source, setSource] = useState("");
+<<<<<<< HEAD
   const [sourceName, setSourceName] = useState("");
   const [destName, setDestName] = useState("");
   const [sourceCords, setSourceCords] = useState([32.4832324, 33.324234]);
   const [destCords, setDestCords] = useState([32.532352, 33.234342]);
   const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
   const [loading, setLoading] = useState(false);
+=======
+  const [sourceName , setSourceName] = useState('');
+  const [destName , setDestName] = useState('');
+  const [sourceCords, setSourceCords] = useState([32.4832324, 77.324234]);
+  const [destCords, setDestCords] = useState([32.532352, 33.234342]);
+  const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
+  const [loading , setLoading] = useState(false);
+  const [distance , setDistance] = useState(0.00);
+  const [time , setTime] = useState('');
+>>>>>>> d713f45df3659ca17fe6a55ded5e81d4aeb5f3ed
 
   // useEffect(() => {
   //   console.log();
@@ -66,7 +77,19 @@ export default function Home() {
       //   route[coordinateIndex] = route[coordinateIndex].reverse();
       // }
       // console.log(destCords);
-      setTotalRoutes([data[0]]);
+      setTotalRoutes(data[0].route);
+      var dist = data[0].distance;
+      dist = (dist / 1000).toFixed(1);
+      var seconds = data[0].duration;
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      if(hours === 0) {
+        setTime(`${minutes} mins`)
+      }
+      else{
+        setTime(`${hours}hrs ${minutes}mins`)
+      }
+      setDistance(dist);
       setLoading(false);
       // return route;
     } catch (error) {
@@ -208,12 +231,12 @@ export default function Home() {
           <Stack spacing={1}>
             <Text className={styles.spacing}>
               <span>Distance: </span>
-              <span className="cl-blue bold">3.9 KM</span>
+              <span className="cl-blue bold">{`${distance} Km`}</span>
             </Text>
 
             <Text>
               <span>Duration: </span>
-              <span className="cl-blue bold">20 Minutes</span>
+              <span className="cl-blue bold">{`${time}`}</span>
             </Text>
           </Stack>
 
@@ -233,7 +256,7 @@ export default function Home() {
 
           <Card className={styles.spacing}>
             <CardBody>
-              <Accordion defaultIndex={[0]} allowToggle>
+              <Accordion defaultIndex={[0]}>
                 <AccordionItem>
                   <h2>
                     <AccordionButton>
