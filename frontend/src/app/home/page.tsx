@@ -212,30 +212,18 @@ export default function Home() {
           <Stack
             spacing={2}
             direction="row"
-            align="center"
+            align="baseline"
             className={styles.spacing}
           >
             <Button colorScheme="blue" className={styles.spacing}>
-              Safety Mode
+              Safety Route
             </Button>
-            <Text fontSize="xs">Recommended</Text>
+            <Button colorScheme="blue" variant="outline" onClick={getRoutes}>
+              Search Route
+            </Button>
           </Stack>
 
-          <ButtonGroup className="padding-vertical">
-            <Button
-              colorScheme="blue"
-              variant="outline"
-              size="sm"
-              onClick={getRoutes}
-            >
-              Shortest Path
-            </Button>
-            <Button colorScheme="blue" variant="outline" size="sm">
-              Shortest Time
-            </Button>
-          </ButtonGroup>
-
-          <Card>
+          <Card className={styles.spacing}>
             <CardBody>
               <Accordion defaultIndex={[0]} allowToggle>
                 <AccordionItem>
