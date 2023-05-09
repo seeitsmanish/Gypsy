@@ -32,6 +32,8 @@ import styles from "./page.module.css";
 export default function Home() {
   const [items, setItems] = useState([{}]);
   // const [source, setSource] = useState("");
+  const [sourceName , setSourceName] = useState('');
+  const [destName , setDestName] = useState('');
   const [sourceCords, setSourceCords] = useState([32.4832324, 33.324234]);
   const [destCords, setDestCords] = useState([32.532352, 33.234342]);
   const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
@@ -142,9 +144,11 @@ export default function Home() {
   };
   const setInput = (value) => {
     setSourceCords([value.lon, value.lat]);
+    setSourceName(value.name);
   };
   const setOutput = (value) => {
     setDestCords([value.lon, value.lat]);
+    setDestName(value.name);
   };
 
   return (
@@ -284,9 +288,10 @@ export default function Home() {
         totalRoutes={totalRoutes}
         source={[sourceCords[1], sourceCords[0]]}
         destination={[destCords[1], destCords[0]]}
+        sourceName = {sourceName}
+        destName = {destName}
         className={styles.map}
       />
-         
     </div>
   );
 }

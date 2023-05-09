@@ -33,7 +33,7 @@ const limeOptions = { color: "lime" };
 const purpleOptions = { color: "purple" };
 const redOptions = { color: "red" };
 
-export default function Maps({ totalRoutes, source, destination }) {
+export default function Maps({ totalRoutes, source, destination, sourceName, destName }) {
   const multiPolyline = totalRoutes;
   const position = [28.675538, 77.316325];
   // console.log(multiPolyline);
@@ -53,12 +53,12 @@ export default function Maps({ totalRoutes, source, destination }) {
       <Polyline pathOptions={limeOptions} positions={multiPolyline} />
       <Marker position={source}>
         <Popup>
-          Source <br /> NIET College Plot 14
+          Source <br />{sourceName}
         </Popup>
       </Marker>
       <Marker position={destination}>
         <Popup>
-          Source <br /> NIET College Plot 14
+          Destination <br /> {destName}
         </Popup>
       </Marker>
       <ZoomControl position="bottomright" />
