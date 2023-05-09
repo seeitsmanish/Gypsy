@@ -77,12 +77,12 @@ async def getRoute(route: RouteRequest):
         for l in ls:
             l[:] = reversed(l[:])
         res.append(ls)
-        newObj = {}
-        newObj['distance'] = route['legs'][0]['distance']
-        newObj['duration'] =  route['legs'][0]['duration']
-        newObj['route'] = ls
+        Place = {}
+        Place['distance'] = route['legs'][0]['distance']
+        Place['duration'] =  route['legs'][0]['duration']
+        Place['route'] = ls
 
-        listWithDistDurAndRoutes.append(newObj)
+        listWithDistDurAndRoutes.append(Place)
 
     
     listWithDistDurAndRoutes
