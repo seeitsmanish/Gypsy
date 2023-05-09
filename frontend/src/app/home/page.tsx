@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Box,
@@ -29,48 +29,43 @@ import Image from "next/image";
 import logo from "./Logo.png";
 import styles from "./page.module.css";
 
-
-
 export default function Home() {
- 
   const [items, setItems] = useState([{}]);
   // const [source, setSource] = useState("");
-  const [lat, setLat] = useState();
-  const [lon, setLon] = useState();
-  const [sourceCords , setSourceCords] = useState([32.4832324,33.324234]);
-  const [destCords , setDestCords] = useState([32.532352,33.234342]);
-  const [totalRoutes , setTotalRoutes] = useState([[28.675538 , 77.316325]]);
+  const [sourceCords, setSourceCords] = useState([32.4832324, 33.324234]);
+  const [destCords, setDestCords] = useState([32.532352, 33.234342]);
+  const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
 
   // useEffect(() => {
   //   console.log();
   // }, [lat])
 
   const getRoutes = async () => {
-      
     // console.log(src,dest);
     try {
       const routes = await fetch(`http://127.0.0.1:8000/api/getRoute`, {
-      method: "POST",
-      body: JSON.stringify({
-        "DeparturePosition": sourceCords,
-        "DestinationPosition": destCords,
-        "DepartureTime": '2023-05-08T23:23:20.735Z',
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8"
-      }
-    });
-    const data = await routes.json();
-    const route = data.routes[0].geometry.coordinates;
-    for(let coordinateIndex = 0; coordinateIndex < route.length; coordinateIndex++) {
-      route[coordinateIndex] = route[coordinateIndex].reverse();
-    }
-    console.log(destCords);
-    setTotalRoutes(route);
-    // return route;
+        method: "POST",
+        body: JSON.stringify({
+          DeparturePosition: sourceCords,
+          DestinationPosition: destCords,
+          DepartureTime: "2023-05-08T23:23:20.735Z",
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      });
+      const data = await routes.json();
+      console.log(data);
+      // const route = data.routes[0].geometry.coordinates;
+      // for(let coordinateIndex = 0; coordinateIndex < route.length; coordinateIndex++) {
+      //   route[coordinateIndex] = route[coordinateIndex].reverse();
+      // }
+      // console.log(destCords);
+      setTotalRoutes([data[0]]);
+      // return route;
     } catch (error) {
       console.log(error);
-    }  
+    }
   };
 
   // const handleChangeSource = async (event) => {
@@ -110,10 +105,10 @@ export default function Home() {
   //   console.log(destCords);
   // };
 
-  const handleOnSearch = async (string, results) => {
+  const handleOnSearch = async (string) => {
     // onSearch will have as the first callback parameter
     // the string searched and for the second the results.
-    if(string.length >= 3) {
+    if (string.length >= 3) {
       const response = await fetch(
         `http://127.0.0.1:8000/api/search/?text=${string}&maxResults=5`
       );
@@ -121,12 +116,16 @@ export default function Home() {
       // console.log(data);
       // console.log("pasge.tsx render");
       const newList = [];
-      for (let resultIndex = 0; resultIndex < data.length; resultIndex++) {
+      for (
+        let resultIndex = 0;
+        resultIndex < data.Results.length;
+        resultIndex++
+      ) {
         newList.push({
           id: resultIndex,
-          name: data[resultIndex].display_name,
-          lat: data[resultIndex].lat,
-          lon: data[resultIndex].lon,
+          name: data.Results[resultIndex].Place.Label,
+          lat: data.Results[resultIndex].Place.Geometry.Point[1],
+          lon: data.Results[resultIndex].Place.Geometry.Point[0],
         });
       }
       setItems(newList);
@@ -142,14 +141,11 @@ export default function Home() {
     );
   };
   const setInput = (value) => {
-    setLat(value.lat);
-    setLon(value.lon);
-    setSourceCords([value.lon , value.lat]);
+    setSourceCords([value.lon, value.lat]);
   };
   const setOutput = (value) => {
-    setDestCords([value.lon , value.lat]);
-    getRoutes();
-  }
+    setDestCords([value.lon, value.lat]);
+  };
 
   return (
     <div>
@@ -197,7 +193,7 @@ export default function Home() {
                 onSelect={setOutput}
               />
 
-              {/* <Weather lat={lat} lon={lon} /> */}
+              <Weather lat={sourceCords[1]} lon={sourceCords[0]} />
             </Stack>
           </Stack>
 
@@ -226,7 +222,12 @@ export default function Home() {
           </Stack>
 
           <ButtonGroup className="padding-vertical">
-            <Button colorScheme="blue" variant="outline" size="sm">
+            <Button
+              colorScheme="blue"
+              variant="outline"
+              size="sm"
+              onClick={getRoutes}
+            >
               Shortest Path
             </Button>
             <Button colorScheme="blue" variant="outline" size="sm">
@@ -291,8 +292,13 @@ export default function Home() {
           </Card>
         </div>
       </div>
-
-      <Maps  totalRoutes={totalRoutes} className={styles.map} />
+      <Maps
+        totalRoutes={totalRoutes}
+        source={[sourceCords[1], sourceCords[0]]}
+        destination={[destCords[1], destCords[0]]}
+        className={styles.map}
+      />
+         
     </div>
   );
 }

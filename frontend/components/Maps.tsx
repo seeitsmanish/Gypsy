@@ -33,7 +33,7 @@ const limeOptions = { color: "lime" };
 const purpleOptions = { color: "purple" };
 const redOptions = { color: "red" };
 
-export default function Maps({ totalRoutes }) {
+export default function Maps({ totalRoutes, source, destination }) {
   const multiPolyline = totalRoutes;
   const position = [28.675538, 77.316325];
   // console.log(multiPolyline);
@@ -51,7 +51,12 @@ export default function Maps({ totalRoutes }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <Polyline pathOptions={limeOptions} positions={multiPolyline} />
-      <Marker position={position}>
+      <Marker position={source}>
+        <Popup>
+          Source <br /> NIET College Plot 14
+        </Popup>
+      </Marker>
+      <Marker position={destination}>
         <Popup>
           Source <br /> NIET College Plot 14
         </Popup>

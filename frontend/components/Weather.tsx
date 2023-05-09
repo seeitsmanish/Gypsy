@@ -13,18 +13,20 @@ function Weather({ lat, lon }) {
   });
   const key = "35f31b82fd9b0c3cd70bc65fc7dc9ed6";
 
-  fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}`
-  )
-    .then((data) => data.json())
-    .then((string) => {
-      console.log(string);
-      setWeatherObj({
-        temp: string.main.temp,
-        weather: string.weather[0].description,
-        wind: string.wind.speed,
+  useEffect(() => {
+    fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}`
+    )
+      .then((data) => data.json())
+      .then((string) => {
+        console.log(string);
+        setWeatherObj({
+          temp: string.main.temp,
+          weather: string.weather[0].description,
+          wind: string.wind.speed,
+        });
       });
-    });
+  }, [lat, lon]);
 
   const celsius = weatherObj.temp - 273.15; // Convert Kelvin to Celsius
   const temperature = `${Math.round(celsius)}°C`; // Round to nearest whole number and add degree symbol
