@@ -17,7 +17,8 @@ const limeOptions = { color: "lime" };
 const purpleOptions = { color: "purple" };
 const redOptions = { color: "red" };
 
-export default function Maps({ totalRoutes, source, destination }) {
+
+export default function Maps({ totalRoutes,safeRoutes, source, destination, sourceName, destName }) {
   const multiPolyline = totalRoutes;
   // console.log(multiPolyline);
   return (
@@ -45,6 +46,8 @@ export default function Maps({ totalRoutes, source, destination }) {
         </Popup>
       </Marker>
       <ZoomControl position="bottomright" />
+      <Polyline pathOptions={{color:'blue'}} positions={safeRoutes} />
+
     </MapContainer>
   );
 }
