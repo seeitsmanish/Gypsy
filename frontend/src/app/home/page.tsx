@@ -40,7 +40,7 @@ export default function Home() {
   const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
   const [loading , setLoading] = useState(false);
   const [distance , setDistance] = useState(0.00);
-  const [time , setTime] = useState(0.00);
+  const [time , setTime] = useState('');
 
   // useEffect(() => {
   //   console.log();
@@ -71,9 +71,15 @@ export default function Home() {
       setTotalRoutes(data[0].route);
       var dist = data[0].distance;
       dist = (dist / 1000).toFixed(1);
-      var t = data[0].duration;
-      t = (t / 3600).toFixed(2);
-      setTime(t);
+      var seconds = data[0].duration;
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      if(hours === 0) {
+        setTime(`${minutes} mins`)
+      }
+      else{
+        setTime(`${hours}hrs ${minutes}mins`)
+      }
       setDistance(dist);
       setLoading(false);
       // return route;
@@ -221,7 +227,7 @@ export default function Home() {
 
             <Text>
               <span>Duration: </span>
-              <span className="cl-blue bold">{`${time} hr`}</span>
+              <span className="cl-blue bold">{`${time}`}</span>
             </Text>
           </Stack>
 
