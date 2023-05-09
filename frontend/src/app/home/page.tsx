@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import {
   Box,
@@ -33,12 +33,12 @@ import styles from "./page.module.css";
 export default function Home() {
   const [items, setItems] = useState([{}]);
   // const [source, setSource] = useState("");
-  const [sourceName , setSourceName] = useState('');
-  const [destName , setDestName] = useState('');
+  const [sourceName, setSourceName] = useState("");
+  const [destName, setDestName] = useState("");
   const [sourceCords, setSourceCords] = useState([32.4832324, 33.324234]);
   const [destCords, setDestCords] = useState([32.532352, 33.234342]);
   const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
-  const [loading , setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
   //   console.log();
@@ -208,7 +208,7 @@ export default function Home() {
           <Stack spacing={1}>
             <Text className={styles.spacing}>
               <span>Distance: </span>
-              <span className="cl-blue bold">1.9 KM</span>
+              <span className="cl-blue bold">3.9 KM</span>
             </Text>
 
             <Text>
@@ -288,24 +288,25 @@ export default function Home() {
           </Card>
         </div>
       </div>
-      {
-        loading ? <Spinner
-        thickness='8px'
-        speed='0.65s'
-        emptyColor='gray.200'
-        color='blue.500'
-        size='xl'
-        className={styles.spinner}
-      /> :
-      
-      <Maps
-        totalRoutes={totalRoutes}
-        source={[sourceCords[1], sourceCords[0]]}
-        destination={[destCords[1], destCords[0]]}
-        sourceName = {sourceName}
-        destName = {destName}
-        className={styles.map}
-      />}
+      {loading ? (
+        <Spinner
+          thickness="8px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+          className={styles.spinner}
+        />
+      ) : (
+        <Maps
+          totalRoutes={totalRoutes}
+          source={[sourceCords[1], sourceCords[0]]}
+          destination={[destCords[1], destCords[0]]}
+          sourceName={sourceName}
+          destName={destName}
+          className={styles.map}
+        />
+      )}
     </div>
   );
 }

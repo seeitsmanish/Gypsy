@@ -23,7 +23,6 @@
 .search_input {
   z-index: 1;
   cursor: pointer;
-  
 }
 .pointer {
   cursor: pointer;
@@ -42,7 +41,7 @@
 
 .spacing {
   margin-top: 0.8em;
-  z-index: -999;
+  /* z-index: -999; */
 }
 
 .main_content {
