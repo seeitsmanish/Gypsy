@@ -9,7 +9,6 @@ import {
   Text,
   CardBody,
   Button,
-  ButtonGroup,
   Tabs,
   TabList,
   Tab,
@@ -32,22 +31,16 @@ import styles from "./page.module.css";
 
 export default function Home() {
   const [items, setItems] = useState([{}]);
-  // const [source, setSource] = useState("");
   const [sourceName , setSourceName] = useState('');
   const [destName , setDestName] = useState('');
-  const [sourceCords, setSourceCords] = useState([32.4832324, 77.324234]);
-  const [destCords, setDestCords] = useState([32.532352, 33.234342]);
-  const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
+  const [sourceCords, setSourceCords] = useState([77.490229 , 28.462382]);
+  const [destCords, setDestCords] = useState([77.490229 , 28.462382]);
+  const [totalRoutes, setTotalRoutes] = useState([[77.490229 , 28.462382]]);
   const [loading , setLoading] = useState(false);
   const [distance , setDistance] = useState(0.00);
   const [time , setTime] = useState('');
 
-  // useEffect(() => {
-  //   console.log();
-  // }, [lat])
-
   const getRoutes = async () => {
-    // console.log(src,dest);
     try {
       setLoading(true);
       const routes = await fetch(`http://127.0.0.1:8000/api/getRoute`, {
@@ -63,11 +56,6 @@ export default function Home() {
       });
       const data = await routes.json();
       console.log(data);
-      // const route = data.routes[0].geometry.coordinates;
-      // for(let coordinateIndex = 0; coordinateIndex < route.length; coordinateIndex++) {
-      //   route[coordinateIndex] = route[coordinateIndex].reverse();
-      // }
-      // console.log(destCords);
       setTotalRoutes(data[0].route);
       var dist = data[0].distance;
       dist = (dist / 1000).toFixed(1);
@@ -82,59 +70,19 @@ export default function Home() {
       }
       setDistance(dist);
       setLoading(false);
-      // return route;
     } catch (error) {
       console.log(error);
     }
   };
 
-  // const handleChangeSource = async (event) => {
-  //   setSource(event.target.value);
-  //   if (event.target.value.length >= 3) {
-  //     setSuggestions([]);
-  //     const response = await fetch(
-  //       `http://127.0.0.1:8000/api/search/?text=${event.target.value}&maxResults=5`
-  //     );
-  //     const data = await response.json();
-  //     setSourceCords(data["Results"][0]["Place"]["Geometry"]["Point"]);
-  //     // setSuggestions(response);
-  //     data.Results.forEach((result) => {
-  //       suggestions.push(result.Place.Label);
-  //     });
-  //   }
-  //   // console.log(suggestions);
-  //   console.log(sourceCords);
-  // };
-
-  // const handleChangeDest = async (event) => {
-  //   setDest(event.target.value);
-  //   if (event.target.value.length >= 3) {
-  //     setSuggestions([]);
-  //     const response = await fetch(
-  //       `http://127.0.0.1:8000/api/search/?text=${event.target.value}&maxResults=5`
-  //     );
-  //     const data = await response.json();
-  //     console.log(data);
-  //     setDestCords(data["Results"][0]["Place"]["Geometry"]["Point"]);
-  //     data.Results.forEach((result) => {
-  //       suggestions.push(result.Place.label);
-  //     });
-  //     // getRoutes(event);
-  //   }
-  //   // console.log(suggestions);
-  //   console.log(destCords);
-  // };
-
   const handleOnSearch = async (string) => {
     // onSearch will have as the first callback parameter
     // the string searched and for the second the results.
-    if (string.length >= 3) {
+    if (string.length >= 2) {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/search/?text=${string}&maxResults=5`
+        `http://127.0.0.1:8000/api/search/?text=${string}&maxResults=3`
       );
       const data = await response.json();
-      // console.log(data);
-      // console.log("pasge.tsx render");
       const newList = [];
       for (
         let resultIndex = 0;
@@ -155,7 +103,6 @@ export default function Home() {
   const formatResult = (item) => {
     return (
       <>
-        {/* <span style={{ display: 'block', textAlign: 'left' }}>id: {item.id}</span> */}
         <span>{item.name}</span>
       </>
     );
@@ -240,7 +187,7 @@ export default function Home() {
             <Button colorScheme="blue" className={styles.spacing}>
               Safety Route
             </Button>
-            <Button colorScheme="blue" variant="outline" onClick={getRoutes}>
+            <Button colorScheme="blue" variant="outline" onClick={getRoutes} >
               Search Route
             </Button>
           </Stack>
