@@ -205,11 +205,15 @@ async def getSafestPath(route: RouteRequest):
             node = G.nodes[safe_path_node]
             safe_path_coord.append([node["lat"], node["lon"]])
 
-        # safe_path_coord = list(map(id_to_coord, safe_path))
-        return safe_path_coord
+        final_path = safe_path_coord
     except Exception as e:
         for l in optimal_path:
             l[:] = reversed(l[:])
-        return optimal_path
+        final_path = optimal_path
 
-     
+    bounding_box = [[minLat,minLon],[minLat,maxLon],[maxLat,minLon],[maxLat, maxLon]]
+
+    return {
+        "final_path": final_path,
+        "bounding_box": bounding_box
+    }
