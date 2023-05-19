@@ -31,14 +31,20 @@ import styles from "./page.module.css";
 
 export default function Home() {
   const [items, setItems] = useState([{}]);
-  const [sourceName, setSourceName] = useState("");
-  const [destName, setDestName] = useState("");
-  const [sourceCords, setSourceCords] = useState([77.490229, 28.462382]);
-  const [destCords, setDestCords] = useState([77.490229, 28.462382]);
-  const [totalRoutes, setTotalRoutes] = useState([[77.490229, 28.462382]]);
-  const [loading, setLoading] = useState(false);
-  const [distance, setDistance] = useState(0.0);
-  const [time, setTime] = useState("");
+  // const [source, setSource] = useState("");
+  const [sourceName , setSourceName] = useState('');
+  const [destName , setDestName] = useState('');
+  const [sourceCords, setSourceCords] = useState([32.4832324, 77.324234]);
+  const [destCords, setDestCords] = useState([32.532352, 33.234342]);
+  const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
+  const [loading , setLoading] = useState(false);
+  const [distance , setDistance] = useState(0.00);
+  const [time , setTime] = useState('');
+  const [safeRoutes, setSafeRoutes] = useState([[]]);
+
+  // useEffect(() => {
+  //   console.log();
+  // }, [lat])
 
   const getRoutes = async () => {
     try {
@@ -56,7 +62,14 @@ export default function Home() {
       });
       const data = await routes.json();
       console.log(data);
-      setTotalRoutes(data[0].route);
+      let cor = [];
+      for (let cordinates of data) {
+        cor.push(cordinates.route);
+      }
+      setSafeRoutes(cor);
+
+      console.log(totalRoutes);
+      // setTotalRoutes(data[0].route);
       var dist = data[0].distance;
       dist = (dist / 1000).toFixed(1);
       var seconds = data[0].duration;
@@ -74,31 +87,7 @@ export default function Home() {
     }
   };
   
-  const getSafeRoute = async () =>{
 
-    try {
-      setLoading(true);
-      const routes = await fetch(`http://127.0.0.1:8000/api/getSafestPath`, {
-        method: "POST",
-        body: JSON.stringify({
-          DeparturePosition: sourceCords,
-          DestinationPosition: destCords,
-          DepartureTime: `${new Date()}`,
-        }),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          'Accept': 'application/json'
-        },
-      });
-      const data = await routes.json();
-      console.log(data);
-      setSafeRoutes(data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-
-  }
 
   const handleOnSearch = async (string) => {
     // onSearch will have as the first callback parameter
@@ -125,8 +114,7 @@ export default function Home() {
     }
   };
 
-  const getSafeRoute = async (event) =>{
-
+  const getSafeRoute = async (event) => {
     try {
       setLoading(true);
       const routes = await fetch("http://127.0.0.1:8000/api/getSafestPath", {
@@ -138,7 +126,7 @@ export default function Home() {
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8",
-          'Accept': 'application/json'
+          Accept: "application/json",
         },
       });
       const data = await routes.json();
@@ -161,8 +149,7 @@ export default function Home() {
     } catch (error) {
       console.log(error);
     }
-
-  }
+  };
 
   const formatResult = (item) => {
     return (
@@ -248,7 +235,7 @@ export default function Home() {
             align="baseline"
             className={styles.spacing}
           >
-            <Button colorScheme="blue" className={styles.spacing}>
+            <Button colorScheme="blue" className={styles.spacing} onClick = {getSafeRoute}>
               Safety Route
             </Button>
             <Button colorScheme="blue" variant="outline" onClick={getRoutes}>
@@ -313,25 +300,25 @@ export default function Home() {
           </Card>
         </div>
       </div>
-      {loading ? (
-        <Spinner
-          thickness="8px"
-          speed="0.65s"
-          emptyColor="gray.200"
-          color="blue.500"
-          size="xl"
-          className={styles.spinner}
-        />
-      ) : (
-        <Maps
-          totalRoutes={totalRoutes}
-          source={[sourceCords[1], sourceCords[0]]}
-          destination={[destCords[1], destCords[0]]}
-          sourceName={sourceName}
-          destName={destName}
-          className={styles.map}
-        />
-      )}
+      {
+        loading ? <Spinner
+        thickness='8px'
+        speed='0.65s'
+        emptyColor='gray.200'
+        color='blue.500'
+        size='xl'
+        className={styles.spinner}
+      /> :
+      
+      <Maps
+        totalRoutes={totalRoutes}
+        safeRoutes={safeRoutes} 
+        source={[sourceCords[1], sourceCords[0]]}
+        destination={[destCords[1], destCords[0]]}
+        sourceName = {sourceName}
+        destName = {destName}
+        className={styles.map}
+      />}
     </div>
   );
 }

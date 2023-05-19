@@ -17,8 +17,14 @@ const limeOptions = { color: "lime" };
 const purpleOptions = { color: "purple" };
 const redOptions = { color: "red" };
 
-
-export default function Maps({ totalRoutes,safeRoutes, source, destination, sourceName, destName }) {
+export default function Maps({
+  totalRoutes,
+  safeRoutes,
+  source,
+  destination,
+  sourceName,
+  destName,
+}) {
   const multiPolyline = totalRoutes;
   // console.log(multiPolyline);
   return (
@@ -34,20 +40,19 @@ export default function Maps({ totalRoutes,safeRoutes, source, destination, sour
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">Gypsy Maps</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <Polyline pathOptions={{ color: "blue" }} positions={safeRoutes} />
       <Polyline pathOptions={limeOptions} positions={multiPolyline} />
       <Marker position={source}>
         <Popup>
-          Source <br /> NIET College Plot 14
+          Source <br /> {sourceName}
         </Popup>
       </Marker>
       <Marker position={destination}>
         <Popup>
-          Source <br /> NIET College Plot 14
+          Source <br /> {destName}
         </Popup>
       </Marker>
       <ZoomControl position="bottomright" />
-      <Polyline pathOptions={{color:'blue'}} positions={safeRoutes} />
-
     </MapContainer>
   );
 }
