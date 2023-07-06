@@ -34,8 +34,8 @@ export default function Home() {
   // const [source, setSource] = useState("");
   const [sourceName , setSourceName] = useState('');
   const [destName , setDestName] = useState('');
-  const [sourceCords, setSourceCords] = useState([32.4832324, 77.324234]);
-  const [destCords, setDestCords] = useState([32.532352, 33.234342]);
+  const [sourceCords, setSourceCords] = useState([77.490468,28.462547]);
+  const [destCords, setDestCords] = useState([77.498598,28.456148]);
   const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
   const [loading , setLoading] = useState(false);
   const [distance , setDistance] = useState(0.00);

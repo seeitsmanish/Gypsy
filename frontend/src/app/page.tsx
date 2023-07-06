@@ -12,7 +12,7 @@ export default function Home() {
       </Link>
 
       <Earth className={styles.earth}/>
-      <h1 className={styles.ai}> Welcome to AI Map Navigator</h1>
+      <h1 className={styles.ai}> Welcome to Map Navigator</h1>
     </div>
   );
 }
