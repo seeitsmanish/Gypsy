@@ -22,24 +22,24 @@ import {
 
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
-import Weather from "../../../components/Weather";
-import Maps from "../../../components/Maps";
+import Weather from "../../components/Weather";
+import Maps from "../../components/Maps";
 
-import Image from "next/image";
+import { Img } from "react-image";
 import logo from "./Logo.png";
 import styles from "./page.module.css";
 
 export default function Home() {
   const [items, setItems] = useState([{}]);
   // const [source, setSource] = useState("");
-  const [sourceName , setSourceName] = useState('');
-  const [destName , setDestName] = useState('');
-  const [sourceCords, setSourceCords] = useState([77.490468,28.462547]);
-  const [destCords, setDestCords] = useState([77.498598,28.456148]);
+  const [sourceName, setSourceName] = useState("");
+  const [destName, setDestName] = useState("");
+  const [sourceCords, setSourceCords] = useState([32.4832324, 77.324234]);
+  const [destCords, setDestCords] = useState([32.532352, 33.234342]);
   const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
-  const [loading , setLoading] = useState(false);
-  const [distance , setDistance] = useState(0.00);
-  const [time , setTime] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [distance, setDistance] = useState(0.0);
+  const [time, setTime] = useState("");
   const [safeRoutes, setSafeRoutes] = useState([[]]);
 
   // useEffect(() => {
@@ -86,8 +86,6 @@ export default function Home() {
       console.log(error);
     }
   };
-  
-
 
   const handleOnSearch = async (string) => {
     // onSearch will have as the first callback parameter
@@ -114,7 +112,7 @@ export default function Home() {
     }
   };
 
-  const getSafeRoute = async (event) => {
+  const getSafeRoute = async () => {
     try {
       setLoading(true);
       const routes = await fetch("http://127.0.0.1:8000/api/getSafestPath", {
@@ -171,7 +169,7 @@ export default function Home() {
     <div>
       <div className={styles.sidebar}>
         <div className={styles.center}>
-          <Image src={logo} alt="Logo" height={200} width={200} />
+          <Img src={logo} alt="Logo" height={200} width={200} />
         </div>
 
         <div className={styles.niet_hackathon}>
@@ -235,7 +233,11 @@ export default function Home() {
             align="baseline"
             className={styles.spacing}
           >
-            <Button colorScheme="blue" className={styles.spacing} onClick = {getSafeRoute}>
+            <Button
+              colorScheme="blue"
+              className={styles.spacing}
+              onClick={getSafeRoute}
+            >
               Safety Route
             </Button>
             <Button colorScheme="blue" variant="outline" onClick={getRoutes}>
@@ -300,25 +302,26 @@ export default function Home() {
           </Card>
         </div>
       </div>
-      {
-        loading ? <Spinner
-        thickness='8px'
-        speed='0.65s'
-        emptyColor='gray.200'
-        color='blue.500'
-        size='xl'
-        className={styles.spinner}
-      /> :
-      
-      <Maps
-        totalRoutes={totalRoutes}
-        safeRoutes={safeRoutes} 
-        source={[sourceCords[1], sourceCords[0]]}
-        destination={[destCords[1], destCords[0]]}
-        sourceName = {sourceName}
-        destName = {destName}
-        className={styles.map}
-      />}
+      {loading ? (
+        <Spinner
+          thickness="8px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+          className={styles.spinner}
+        />
+      ) : (
+        <Maps
+          className={styles.map}
+          totalRoutes={totalRoutes}
+          safeRoutes={safeRoutes}
+          source={[sourceCords[1], sourceCords[0]]}
+          destination={[destCords[1], destCords[0]]}
+          sourceName={sourceName}
+          destName={destName}
+        />
+      )}
     </div>
   );
 }
