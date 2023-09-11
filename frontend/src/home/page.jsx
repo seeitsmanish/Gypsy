@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Box,
@@ -34,7 +34,7 @@ export default function Home() {
   // const [source, setSource] = useState("");
   const [sourceName, setSourceName] = useState("");
   const [destName, setDestName] = useState("");
-  const [sourceCords, setSourceCords] = useState([32.4832324, 77.324234]);
+  const [sourceCords, setSourceCords] = useState([77.209, 28.6139]);
   const [destCords, setDestCords] = useState([32.532352, 33.234342]);
   const [totalRoutes, setTotalRoutes] = useState([[28.675538, 77.316325]]);
   const [loading, setLoading] = useState(false);
@@ -49,7 +49,7 @@ export default function Home() {
   const getRoutes = async () => {
     try {
       setLoading(true);
-      const routes = await fetch(`http://127.0.0.1:8000/api/getRoute`, {
+      const routes = await fetch(`http://16.170.148.47:3000/api/getRoute`, {
         method: "POST",
         body: JSON.stringify({
           DeparturePosition: sourceCords,
@@ -88,65 +88,29 @@ export default function Home() {
   };
 
   const handleOnSearch = async (string) => {
-    // onSearch will have as the first callback parameter
-    // the string searched and for the second the results.
-    if (string.length >= 2) {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/search/?text=${string}&maxResults=3`
-      );
-      const data = await response.json();
-      const newList = [];
-      for (
-        let resultIndex = 0;
-        resultIndex < data.Results.length;
-        resultIndex++
-      ) {
-        newList.push({
-          id: resultIndex,
-          name: data.Results[resultIndex].Place.Label,
-          lat: data.Results[resultIndex].Place.Geometry.Point[1],
-          lon: data.Results[resultIndex].Place.Geometry.Point[0],
-        });
-      }
-      setItems(newList);
-    }
-  };
+    if (string === "") return;
+    const response = await fetch(
+      `http://16.170.148.47:3000/api/search/?text=${string}&maxResults=3`
+    );
+    const data = await response.json();
+    const newList = [];
 
-  const getSafeRoute = async () => {
-    try {
-      setLoading(true);
-      const routes = await fetch("http://127.0.0.1:8000/api/getSafestPath", {
-        method: "POST",
-        body: JSON.stringify({
-          DeparturePosition: sourceCords,
-          DestinationPosition: destCords,
-          DepartureTime: "2023-05-09T08:01:55.178Z",
-        }),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          Accept: "application/json",
-        },
+    console.log(`For ${string} = ${data.Results.length}`);
+    for (
+      let resultIndex = 0;
+      resultIndex < data.Results.length;
+      resultIndex++
+    ) {
+      newList.push({
+        id: resultIndex,
+        name: data.Results[resultIndex].Place.Label,
+        lat: data.Results[resultIndex].Place.Geometry.Point[1],
+        lon: data.Results[resultIndex].Place.Geometry.Point[0],
       });
-      const data = await routes.json();
-      console.log(data);
-      setSafeRoutes(data);
-      // var dist = data[0].distance;
-      // dist = (dist / 1000).toFixed(1);
-      // var seconds = data[0].duration;
-      // const hours = Math.floor(seconds / 3600);
-      // const minutes = Math.floor((seconds % 3600) / 60);
-      // if(hours === 0) {
-      //   setTime(`${minutes} mins`)
-      // }
-      // else{
-      //   setTime(`${hours}hrs ${minutes}mins`)
-      // }
-      // setDistance(dist);
-      setLoading(false);
-      // return route;
-    } catch (error) {
-      console.log(error);
     }
+
+    console.log(newList);
+    setItems(newList);
   };
 
   const formatResult = (item) => {
@@ -234,13 +198,12 @@ export default function Home() {
             className={styles.spacing}
           >
             <Button
+              style={{
+                width: "100%",
+              }}
               colorScheme="blue"
-              className={styles.spacing}
-              onClick={getSafeRoute}
+              onClick={getRoutes}
             >
-              Safety Route
-            </Button>
-            <Button colorScheme="blue" variant="outline" onClick={getRoutes}>
               Search Route
             </Button>
           </Stack>
@@ -292,9 +255,9 @@ export default function Home() {
                     </AccordionButton>
                   </h2>
                   <AccordionPanel pb={4}>
-                    Route between IILM College and NIET College is very good. No
+                    {`Route between ${sourceName} and ${destName} is very good. No
                     traffic is to be expected. Drive faster than normal to reach
-                    in optimal time.
+                    in optimal time.`}
                   </AccordionPanel>
                 </AccordionItem>
               </Accordion>
